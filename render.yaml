@@ -1,7 +1,7 @@
 services:
   # FastAPI backend
   - type: web
-    name: dsa-backend-rag
+    name: dsa-backend_rag
     runtime: python
     plan: free
     buildCommand: pip install -r Backend/requirements.txt
@@ -15,14 +15,14 @@ services:
 
   # Django frontend
   - type: web
-    name: dsa-frontend
+    name: dsa-frontend-rag
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
     startCommand: gunicorn project.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DSA_BACKEND_START_URL
-        value: ${dsa-backend-rag.url}/start
+        value: ${dsa-backend_rag.url}/start
       - key: ALLOWED_HOSTS
         value: ${dsa-frontend.url}
       - key: DEBUG
