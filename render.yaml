@@ -5,7 +5,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r Backend/requirements.txt
-    startCommand: uvicorn Backend.main:app --host 0.0.0.0 --port $PORT
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker Backend.main:app --bind 0.0.0.0:$PORT
     envVars:
       - key: Embedding_URL
         sync: false

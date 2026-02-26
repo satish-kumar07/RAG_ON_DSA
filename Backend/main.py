@@ -21,8 +21,9 @@ if not LLM_URL:
     raise ValueError("Missing LLM URL in env variables")
 
 # Load constant file like faiss and pkl
-faiss_file="DSAdataFaiss.faiss"
-pkl_file="DSAdataPKL.pkl"
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+faiss_file = os.path.join(_BASE_DIR, "DSAdataFaiss.faiss")
+pkl_file = os.path.join(_BASE_DIR, "DSAdataPKL.pkl")
 
 # Load FAISS index
 index = faiss.read_index(faiss_file)

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +30,24 @@ SECRET_KEY = 'django-insecure-9e9yy$5$i!c*n1!adf%o)3i5p3h%e=m-tk0!af6z_3nni)0ob(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+def _normalize_allowed_host(value: str) -> str:
+    v = (value or "").strip()
+    if not v:
+        return ""
+    if "://" in v:
+        parsed = urlparse(v)
+        v = parsed.hostname or ""
+    if ":" in v:
+        v = v.split(":", 1)[0]
+    return v.strip()
+
+
+_raw_allowed_hosts = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+ALLOWED_HOSTS = [
+    h
+    for h in (_normalize_allowed_host(x) for x in _raw_allowed_hosts.split(","))
+    if h
+]
 
 
 # Application definition
