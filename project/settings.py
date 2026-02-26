@@ -17,7 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-DSA_BACKEND_START_URL = os.getenv("DSA_BACKEND_START_URL", "http://127.0.0.1:8000/start")
+DSA_BACKEND_START_URL = os.getenv("DSA_BACKEND_START_URL", "http://127.0.0.1:8001/start")
 
 
 # Quick-start development settings - unsuitable for production
