@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DSA Terminal GPT</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: "Courier New", monospace;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .terminal {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            background: black;
+            color: #00ff00ff;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            background: #00ff00;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .thinking {
+            color: #00ffa2ff;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="terminal">
+    <div id="output">
+        DSA Terminal Assistant Ready...<br>
+        Type your DSA question below.<br><br>
+    </div>
+
+    <div>
+        <span>USER&gt;</span>
+        <input type="text" id="input" autofocus />
+        <span class="cursor"></span>
+    </div>
+</div>
+
+<script>
+const input = document.getElementById("input");
+const output = document.getElementById("output");
+
+// Get CSRF token (Django requirement)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+input.addEventListener("keypress", async function(e) {
+    if (e.key === "Enter") {
+        const question = input.value;
+        output.innerHTML += `DSA-GPT> ${question}\n`;
+        input.value = "";
+
+        // Show thinking effect
+        const thinkingId = Date.now();
+        output.innerHTML += `<span id="thinking-${thinkingId}" class="thinking">Thinking...</span>\n`;
+        output.scrollTop = output.scrollHeight;
+
+        const formData = new FormData();
+        formData.append("question", question);
+
+        try {
+            const response = await fetch("/start/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: formData
+            });
+
+            // Remove thinking effect
+            const thinkingElement = document.getElementById(`thinking-${thinkingId}`);
+            if (thinkingElement) {
+                thinkingElement.remove();
+            }
+
+            const data = await response.json();
+            if (!response.ok) {
+                output.innerHTML += `${data.error || "Request failed"}\n\n`;
+            } else {
+                // Remove special symbols like * from the answer
+                const cleanAnswer = data.answer.replace(/\*/g, '');
+                output.innerHTML += `${cleanAnswer}\n`;
+                if (data.time) {
+                    output.innerHTML += `[${data.time}]\n`;
+                }
+                output.innerHTML += "\n";
+            }
+        } catch (error) {
+            // Remove thinking effect
+            const thinkingElement = document.getElementById(`thinking-${thinkingId}`);
+            if (thinkingElement) {
+                thinkingElement.remove();
+            }
+            output.innerHTML += `Request failed: ${error.message}\n\n`;
+        }
+        
+        output.scrollTop = output.scrollHeight;
+    }
+});
+</script>
+
+</body>
+</html>
