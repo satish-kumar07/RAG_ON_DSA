@@ -17,7 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-DSA_BACKEND_START_URL = os.getenv("DSA_BACKEND_START_URL", "http://127.0.0.1:8001/start")
+DSA_BACKEND_START_URL = os.getenv("DSA_BACKEND_START_URL", "http://127.0.0.1:8000/start")
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,9 +27,9 @@ DSA_BACKEND_START_URL = os.getenv("DSA_BACKEND_START_URL", "http://127.0.0.1:800
 SECRET_KEY = 'django-insecure-9e9yy$5$i!c*n1!adf%o)3i5p3h%e=m-tk0!af6z_3nni)0ob('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
