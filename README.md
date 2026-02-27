@@ -1,4 +1,4 @@
-# RAG_ON_DSA (DSA Terminal Assistant)
+# Web-Based RAG System for DSA with Django, FastAPI, and FAISS
 
 This project is a **DSA learning assistant** designed as a retro-style terminal in the browser. It answers Data Structures and Algorithms questions using a **Retrieval-Augmented Generation (RAG)** pipeline.
 
