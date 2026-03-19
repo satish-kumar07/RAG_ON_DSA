@@ -50,6 +50,14 @@ ALLOWED_HOSTS = [
     if h
 ]
 
+# When deployed on Render, service hostnames end with "onrender.com".
+# If the environment didn't provide an explicit ALLOWED_HOSTS, allow
+# the Render domain so the app doesn't raise DisallowedHost there.
+if not DEBUG:
+    has_onrender = any(h.endswith(".onrender.com") for h in ALLOWED_HOSTS)
+    if not has_onrender:
+        ALLOWED_HOSTS.append('.onrender.com')
+
 
 # Application definition
 
