@@ -24,7 +24,7 @@ services:
       - key: DSA_BACKEND_START_URL
         value: ${dsa-backend_rag.url}/start
       - key: ALLOWED_HOSTS
-        value: ${dsa-frontend.url}
+        value: ${dsa-frontend-rag.url}
       - key: DEBUG
         value: "false"
       - key: DATABASE_URL
